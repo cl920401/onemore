@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql:8.4
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+    environment:
+      MYSQL_DATABASE: onemore
+      MYSQL_USER: onemore
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set a generated MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set a generated MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      args:
+        GOPROXY: ${GOPROXY:-https://proxy.golang.org,direct}
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ONEMORE_ADDR: ":8080"
+      ONEMORE_DSN: "onemore:${MYSQL_PASSWORD:?Set a generated MYSQL_PASSWORD}@tcp(db:3306)/onemore?parseTime=true"
+      ONEMORE_ADMIN_TOKEN: ${ONEMORE_ADMIN_TOKEN:?Set a generated ONEMORE_ADMIN_TOKEN}
+      ONEMORE_MASTER_KEY: ${ONEMORE_MASTER_KEY:?Set a generated ONEMORE_MASTER_KEY}
+      ONEMORE_WEB_DIR: /app/web/dist
+    ports:
+      - "127.0.0.1:8080:8080"
+    restart: unless-stopped
+
+volumes:
+  db_data:

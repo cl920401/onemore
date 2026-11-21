@@ -1,0 +1,14 @@
+# Go
+/onemore
+/onemore-server
+/onemore-fakeupstream
+
+# Frontend
+web/node_modules/
+web/dist/
+
+# Local env / logs
+.env
+.env.*
+*.log
+.DS_Store
