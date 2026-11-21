@@ -143,3 +143,9 @@ Personal BYO key, server-side browser sessions / CSRF, streaming, retries,
 multi-tenancy, real vendor calls, concurrency/persistence acceptance, and the
 clean-environment install acceptance still belong to later phases (see
 `AGENTS.md`). The admin token is an MVP placeholder, not the final console auth.
+
+## License
+
+OneMore's first-party code is licensed under the [Apache License 2.0](LICENSE).
+Third-party components keep their own licenses. See
+[Third-party notices and distribution checklist](THIRD_PARTY_NOTICES.md).
